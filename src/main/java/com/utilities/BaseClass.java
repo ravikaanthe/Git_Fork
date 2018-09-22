@@ -3,10 +3,14 @@ package com.utilities;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -17,7 +21,12 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterTest;
@@ -82,14 +91,33 @@ public class BaseClass {
 				System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "/BrowserDrivers/"
 						+ Param.getProperty("os") + "/chromedriver");
 				
-				ChromeOptions options = new ChromeOptions();
-                options.addArguments("headless");
-                options.addArguments("window-size=1200x600");
-                driver = new ChromeDriver(options);
+				 ChromeOptions options = new ChromeOptions();
+				 options.addArguments("headless");
+	             options.addArguments("window-size=1200x600");
+				 DesiredCapabilities cap = DesiredCapabilities.chrome();
+		            cap.setCapability(ChromeOptions.CAPABILITY, options);
+
+		            // set performance logger
+		            // this sends Network.enable to chromedriver
+		            LoggingPreferences logPrefs = new LoggingPreferences();
+		            logPrefs.enable(LogType.PERFORMANCE, Level.ALL);
+		            cap.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+
+		            driver = new ChromeDriver(cap);
+				
+				//Run the browser in headless mode
+				//ChromeOptions options = new ChromeOptions();
+                //options.addArguments("headless");
+                //options.addArguments("window-size=1200x600");
+               // driver = new ChromeDriver(options);
                 
 				//driver = new ChromeDriver();
 				System.out.println("Chrome Driver Instance loaded successfully.");
+				
+
 			}
+				
+			
 
 			catch (WebDriverException wde) {
 				System.out.println("Chrome driver cannot be instantiated" + wde.toString());
