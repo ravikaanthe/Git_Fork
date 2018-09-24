@@ -19,7 +19,7 @@ import org.testng.annotations.DataProvider;
 public class ExcelRead {
 
 	static String filePath = System.getProperty("user.dir") ;
-	static String fileName = "FMPTestData.xlsx";
+	static String fileName = "DRLTestData.xlsx";
 	static File file;
 	static FileInputStream inputStream;
 	static Workbook excelWB = null;
