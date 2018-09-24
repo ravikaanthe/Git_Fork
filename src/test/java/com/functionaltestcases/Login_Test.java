@@ -11,8 +11,11 @@ import org.testng.annotations.Test;
 import com.pages.Login_Page;
 import com.utilities.BaseClass;
 import com.utilities.ExcelRead;
-import com.utilities.GetAPIResponseCode;
 import com.utilities.HelperClass;
+
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 import java.util.Iterator;
 
@@ -36,14 +39,12 @@ public class Login_Test extends BaseClass {
 
 	Login_Page login;
 	HelperClass hc;
-	GetAPIResponseCode response;
 
 	@BeforeClass
 	public void initobj() {
 
 		login = new Login_Page(driver);
 		hc = new HelperClass(driver);
-		response = new GetAPIResponseCode(driver);
 	}
 
 	@AfterClass
@@ -62,11 +63,60 @@ public class Login_Test extends BaseClass {
 
 	@Test(dataProvider = "TestData", dataProviderClass = ExcelRead.class, priority = 1)
 	public void loginToDRLWithInValidCred(String email, String password) throws InterruptedException {
+		
+		 // then ask for all the performance logs from this request
+        // one of them will contain the Network.responseReceived method
+        // and we shall find the "last recorded url" response
+        LogEntries logs = driver.manage().logs().get("performance");
 
-		//Get the Response code
+        int status = -1;
 
-		response.getResponseCode();
+        System.out.println("\nList of log entries:\n");
 
+        for (Iterator<LogEntry> it = logs.iterator(); it.hasNext();)
+        {
+            LogEntry entry = it.next();
+
+            try
+            {
+                JSONObject json = new JSONObject(entry.getMessage());
+
+//                System.out.println(json.toString());
+
+                JSONObject message = json.getJSONObject("message");
+                String method = message.getString("method");
+
+                if (method != null
+                        && "Network.responseReceived".equals(method))
+                {
+                    JSONObject params = message.getJSONObject("params");
+
+                    JSONObject response = params.getJSONObject("response");
+                    String messageUrl = response.getString("url");
+
+                    if ((Param.getProperty("siteURL")).equals(messageUrl))
+                    {
+                        status = response.getInt("status");
+
+                        System.out.println(
+                                "---------- bingo !!!!!!!!!!!!!! returned response for "
+                                        + messageUrl + ": " + status);
+
+                        System.out.println(
+                                "---------- bingo !!!!!!!!!!!!!! headers: "
+                                        + response.get("headers"));
+                    }
+                }
+            } catch (JSONException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("\nstatus code: " + status);
+    
+		
 		//Enter Email Address
 		login.typeemail(email);
 		//Click On Login button
@@ -90,7 +140,7 @@ public class Login_Test extends BaseClass {
 	@Test(dataProvider = "TestData", dataProviderClass = ExcelRead.class, priority = 2)
 	public void loginToDRLWithValidCred(String email, String password) throws InterruptedException {
 
-
+		
 		//Enter Email Address
 		login.typeemail(email);
 		//Click On Login button
@@ -110,8 +160,59 @@ public class Login_Test extends BaseClass {
 		}
 		Thread.sleep(5000);
 
-		response.getResponseCode();    
+		 // then ask for all the performance logs from this request
+        // one of them will contain the Network.responseReceived method
+        // and we shall find the "last recorded url" response
+        LogEntries logs = driver.manage().logs().get("performance");
 
+        int status = -1;
+
+        System.out.println("\nList of log entries:\n");
+
+        for (Iterator<LogEntry> it = logs.iterator(); it.hasNext();)
+        {
+            LogEntry entry = it.next();
+
+            try
+            {
+                JSONObject json = new JSONObject(entry.getMessage());
+
+//                System.out.println(json.toString());
+
+                JSONObject message = json.getJSONObject("message");
+                String method = message.getString("method");
+
+                if (method != null
+                        && "Network.responseReceived".equals(method))
+                {
+                    JSONObject params = message.getJSONObject("params");
+
+                    JSONObject response = params.getJSONObject("response");
+                    String messageUrl = response.getString("url");
+
+                    if ((Param.getProperty("siteURL")).equals(messageUrl))
+                    {
+                        status = response.getInt("status");
+
+                        System.out.println(
+                                "---------- bingo !!!!!!!!!!!!!! returned response for "
+                                        + messageUrl + ": " + status);
+
+                        System.out.println(
+                                "---------- bingo !!!!!!!!!!!!!! headers: "
+                                        + response.get("headers"));
+                    }
+                }
+            } catch (JSONException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("\nstatus code: " + status);
+    
+		
 		//Verify the Home Page title
 		AssertJUnit.assertEquals("MyDay", driver.getTitle());
 		System.out.println("Page Title is: " + driver.getTitle());		
