@@ -10,7 +10,12 @@
 	<name>DRL MyDay</name>
 	<url>http://maven.apache.org</url>
 	<!-- Properties of build UFT-8 -->
+
 	<!-- New Branch Changes to validate pull and merge -->
+
+	
+	<!-- Master Branch Changes to validate pull and merge -->
+
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -130,6 +135,7 @@
     <artifactId>json</artifactId>
     <version>20090211</version>
 </dependency>
+		<!-- Depandancy for Extent Reports need to add here -->
 
 		
 		<!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
