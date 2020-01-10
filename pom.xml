@@ -10,6 +10,9 @@
 	<name>DRL MyDay</name>
 	<url>http://maven.apache.org</url>
 	<!-- Properties of build UFT-8 -->
+	
+	<!-- Master Branch Changes to validate pull and merge -->
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
