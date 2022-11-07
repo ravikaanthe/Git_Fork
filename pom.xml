@@ -6,6 +6,7 @@
 	<!-- POM file Code changes to the Master Brach to form a new branch - Team member1 -->
 
 	<!-- Code changes to Master Branch directly by Team Lead -->
+#non-team memb making changes - fork concept
 
 	
 	<groupId>com.drlmyday</groupId>
